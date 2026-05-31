@@ -285,9 +285,9 @@ void* OPS_IMKPeakOriented();
 //void* OPS_QbSandCPT(void);
 #ifdef _CSS
 void* OPS_Steel05(void);		// SAJalali
-extern void* OPS_SmoothIMK(void);		// SAJalali
-//void* OPS_BucklingStrut(void);		// SAJalali
-//void* OPS_BucklingMaterial(void);		// SAJalali
+extern void* OPS_GVDHysteretic(void);		// M. Gholami
+//void* OPS_BucklingStrut(void);
+//void* OPS_BucklingMaterial(void);
 void* OPS_ConfinedConcrete(void);		// SAJalali
 #endif
 
@@ -311,7 +311,7 @@ static int setUpUniaxialMaterials(void) {
   uniaxialMaterialsMap.insert(
       std::make_pair("Steel05", &OPS_Steel05));
   uniaxialMaterialsMap.insert(
-      std::make_pair("SmoothIMK", &OPS_SmoothIMK));
+      std::make_pair("GVDHysteretic", &OPS_GVDHysteretic));
   uniaxialMaterialsMap.insert(
       std::make_pair("Elastic", &OPS_ElasticMaterial));
   uniaxialMaterialsMap.insert(

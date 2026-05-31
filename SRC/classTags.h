@@ -222,7 +222,7 @@
 #define MAT_TAG_ConcreteECThermal               95   //L.Jiang [SIF]
 #define MAT_TAG_BoucWenOriginal                 96
 #define MAT_TAG_DamperMaterial                  97
-#define MAT_TAG_SPSW02                          98   //SAJalali
+#define MAT_TAG_SPSW02                          98   //
 #define MAT_TAG_Steel02Fatigue                  99 //nassermarafi
 #define MAT_TAG_Concrete02IS                    100 //nassermarafi
 #define MAT_TAG_ConfinedConcrete01              101
@@ -264,8 +264,8 @@
 #define MAT_TAG_TzSandCPT 233
 #define MAT_TAG_QbSandCPT 234
 #ifdef _CSS
-#define MAT_TAG_Steel05          228	//SAJalali
-#define MAT_TAG_SmoothIMK			229	//SAJalali
+#define MAT_TAG_Steel05          228
+#define MAT_TAG_GVDHysteretic			229	//M. Gholami
 #endif
 
 #define MAT_TAG_FedeasMaterial    1000
@@ -1198,12 +1198,12 @@
 #define RECORDER_TAGS_GmshRecorder               21
 #define RECORDER_TAGS_VTK_Recorder               22
 #ifdef _CSS
-#define RECORDER_TAGS_ResidElementRecorder	23		//by SAJalali
-#define RECORDER_TAGS_ResidDriftRecorder	24		//by SAJalali
-#define RECORDER_TAGS_ResidNodeRecorder	25			//by SAJalali
-#define RECORDER_TAGS_ConditionalElementRecorder	28		//by SAJalali
-#define RECORDER_TAGS_ConditionalDriftRecorder	29		//by SAJalali
-#define RECORDER_TAGS_ConditionalNodeRecorder	30			//by SAJalali
+#define RECORDER_TAGS_ResidElementRecorder	23		//by 
+#define RECORDER_TAGS_ResidDriftRecorder	24		//by 
+#define RECORDER_TAGS_ResidNodeRecorder	25			//by 
+#define RECORDER_TAGS_ConditionalElementRecorder	28		//by 
+#define RECORDER_TAGS_ConditionalDriftRecorder	29		//by 
+#define RECORDER_TAGS_ConditionalNodeRecorder	30			//by 
 #endif // _CSS
 #define RECORDER_TAGS_NodeRecorderRMS               26
 #define RECORDER_TAGS_ElementRecorderRMS               27

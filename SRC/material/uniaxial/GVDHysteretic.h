@@ -18,20 +18,20 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.0 $                                                                     
-// Written: 
-// IMK material with exponential transition curves and multiple cyclic modes (Bilinear, poinched and peak-oriented)
+// Written: M. Gholami
+// GVDHysteretic is now able to simulate coplex pinched behaviour. Peakoriented, bilnear, and combination of the three are also possible.
+// Read more: https://www.sciencedirect.com/science/article/pii/S014102962600948X
 
 
-#ifndef SmoothIMK_h
-#define SmoothIMK_h
+#ifndef GVDHysteretic_h
+#define GVDHysteretic_h
 
 #include <UniaxialMaterial.h>
-class SmoothIMK : public UniaxialMaterial
+class GVDHysteretic : public UniaxialMaterial
 {
 public:
 	//enum ebranch { gapping, precap, postcap, residual, failing, failed, peakOriented, pinching, peakPassing };
-	SmoothIMK(int tag,
+	GVDHysteretic(int tag,
 		std::vector<double> pd, std::vector<double> pf,
 		std::vector<double> nd, std::vector<double> nf,
 		double gamaS, double cS,
@@ -43,11 +43,11 @@ public:
 		double betaPinchNeg, double epsPinchNeg, double sigPenetFacNeg, double bilinEndAmpNeg, double unloadingStiffFacNeg,
 		double sigInit);
 
-	SmoothIMK(void);
-	virtual ~SmoothIMK();
+	GVDHysteretic(void);
+	virtual ~GVDHysteretic();
 
 
-	const char* getClassType(void) const { return "SmoothIMK"; };
+	const char* getClassType(void) const { return "GVDHysteretic"; };
 
 	double getInitialTangent(void);
 	UniaxialMaterial* getCopy(void);
@@ -91,7 +91,7 @@ private:
 	double alphaPinchPos, alphaPinchNeg, betaPinchPos, epsPinchPos, pinchYPos, pinchYNeg, betaPinchNeg, epsPinchNeg;
 	//double FydP, FydN;		//Pos and Neg Fy's affected by damage
 	double ExcurEnergy;
-	double EnergyP; //by SAJalali
+	double EnergyP;
 	double sigini; // initial 
 	double unloadingStiffFacPos, unloadingStiffFacNeg;
 	//HISTORY VARIABLES

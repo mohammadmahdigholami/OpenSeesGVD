@@ -65,11 +65,11 @@ extern "C" int OPS_ResetInputNoBuilder(ClientData clientData, Tcl_Interp* interp
 
 #ifdef _CSS
 extern void* OPS_Steel05(void);		// SAJalali
-//extern void* OPS_SmoothIMK(void);		// SAJalali
-// extern void* OPS_BucklingStrut(void);		// SAJalali
-// extern void* OPS_BucklingMaterial(void);		// SAJalali
-extern void* OPS_ConfinedConcrete(void);		// SAJalali
-extern void* OPS_SmoothIMK(void);		// SAJalali
+//extern void* OPS_GVDHysteretic(void);		// M. Gholami
+// extern void* OPS_BucklingStrut(void);
+// extern void* OPS_BucklingMaterial(void);
+extern void* OPS_ConfinedConcrete(void);
+extern void* OPS_GVDHysteretic(void);		// M. Gholami
 #endif
 extern void* OPS_SPSW02(void);		// SAJalali
 // extern void* OPS_TDConcreteEXP(void); // ntosic
@@ -306,8 +306,8 @@ TclModelBuilderUniaxialMaterialCommand(ClientData clientData, Tcl_Interp* interp
 			return TCL_ERROR;
 	}
 #ifdef _CSS
-	//if (strcmp(argv[1], "SmoothIMK") == 0) {
-	//	void* theMat = OPS_SmoothIMK();
+	//if (strcmp(argv[1], "GVDHysteretic") == 0) {
+	//	void* theMat = OPS_GVDHysteretic();
 	//	if (theMat != 0)
 	//		theMaterial = (UniaxialMaterial*)theMat;
 	//	else
@@ -320,8 +320,8 @@ TclModelBuilderUniaxialMaterialCommand(ClientData clientData, Tcl_Interp* interp
 		else
 			return TCL_ERROR;
 	}
-	if (strcmp(argv[1], "SmoothIMK") == 0) {
-		void* theMat = OPS_SmoothIMK();
+	if (strcmp(argv[1], "GVDHysteretic") == 0) {
+		void* theMat = OPS_GVDHysteretic();
 		if (theMat != 0)
 			theMaterial = (UniaxialMaterial*)theMat;
 		else

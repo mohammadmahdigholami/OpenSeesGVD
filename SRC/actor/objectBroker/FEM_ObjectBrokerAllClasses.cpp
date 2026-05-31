@@ -58,14 +58,14 @@
 // uniaxial material model header files
 #ifdef _CSS
 #include <Steel05.h>
-#include <SmoothIMK.h>
+#include <GVDHysteretic.h>
 #endif // _CSS
 //#include "ElasticBilin.h"
 // #include "BoucWenMaterial.h"
 // #include "BWBN.h"
 // #include "BoucWenOriginal.h"
 // #include "BoucWenInfill.h"
-#include "SPSW02.h"			//SAJalali
+#include "SPSW02.h"			//
 #include "ElasticMaterial.h"
 #include "ElasticMultiLinear.h"
 // #include "ElasticPowerFunc.h"
@@ -388,7 +388,7 @@
 #include "elasticBeamColumn/ElasticBeam3d.h"
 // #include "componentElement/ComponentElement2d.h"
 // #include "componentElement/ComponentElement3d.h"
-#include "elasticBeamColumn/ModElasticBeam2d.h"			//SAJalali
+#include "elasticBeamColumn/ModElasticBeam2d.h"			//
 #include "elasticBeamColumn/ModElasticBeam3d.h"
 #include "elasticBeamColumn/ElasticTimoshenkoBeam2d.h"
 #include "elasticBeamColumn/ElasticTimoshenkoBeam3d.h"
@@ -710,12 +710,12 @@
 // #include "drm/H5DRMLoadPattern.h"
 #endif
 
- #include "Parameter.h"
- #include "ElementParameter.h"
- #include "MaterialStageParameter.h"
- #include "MatParameter.h"
- #include "InitialStateParameter.h"
- #include "ElementStateParameter.h"
+#include "Parameter.h"
+#include "ElementParameter.h"
+#include "MaterialStageParameter.h"
+#include "MatParameter.h"
+#include "InitialStateParameter.h"
+#include "ElementStateParameter.h"
 
 // time series
 #include "LinearSeries.h"
@@ -928,7 +928,7 @@ FEM_ObjectBrokerAllClasses::getNewElement(int classTag)
 	case ELE_TAG_ElasticBeam2d:
 		return new ElasticBeam2d();
 
-		//SAJalali
+		//
 	case ELE_TAG_ModElasticBeam2d:
 		return new ModElasticBeam2d();
 
@@ -1683,14 +1683,14 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	switch (classTag) {
 #ifdef _CSS
 	case MAT_TAG_Steel05:
-		return new Steel05(); // SAJalali
-	case MAT_TAG_SmoothIMK:
-		return new SmoothIMK(); // SAJalali
+		return new Steel05();
+	case MAT_TAG_GVDHysteretic:
+		return new GVDHysteretic(); // M. Gholami
 #endif // _CSS
-	//case MAT_TAG_ElasticBilin:
-	//	return new ElasticBilin();
+		//case MAT_TAG_ElasticBilin:
+		//	return new ElasticBilin();
 	case MAT_TAG_SPSW02:
-		return new SPSW02(); // SAJalali
+		return new SPSW02(); // 
 		//case MAT_TAG_BoucWen:
 			//return new BoucWenMaterial();
 		//case MAT_TAG_BoucWenOriginal:
@@ -1903,29 +1903,29 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	case MAT_TAG_ViscousDamper:
 		return new ViscousDamper();
 
-	//case MAT_TAG_APDVFD:
-	//	return new APDVFD();
+		//case MAT_TAG_APDVFD:
+		//	return new APDVFD();
 
-	//case MAT_TAG_APDMD:
-	//	return new APDMD();
+		//case MAT_TAG_APDMD:
+		//	return new APDMD();
 
-	//case MAT_TAG_APDFMD:
-	//	return new APDFMD();
+		//case MAT_TAG_APDFMD:
+		//	return new APDFMD();
 
-	//case MAT_TAG_BilinearOilDamper:
-	//	return new BilinearOilDamper();
+		//case MAT_TAG_BilinearOilDamper:
+		//	return new BilinearOilDamper();
 
-	//case MAT_TAG_Maxwell:
-	//	return new Maxwell();
+		//case MAT_TAG_Maxwell:
+		//	return new Maxwell();
 
-	//case MAT_TAG_ContinuumUniaxial:
-	//	return new ContinuumUniaxial();
+		//case MAT_TAG_ContinuumUniaxial:
+		//	return new ContinuumUniaxial();
 
-	//case MAT_TAG_PathIndependent:
-	//	return new PathIndependentMaterial();
+		//case MAT_TAG_PathIndependent:
+		//	return new PathIndependentMaterial();
 
-	//case MAT_TAG_Backbone:
-	//	return new BackboneMaterial();
+		//case MAT_TAG_Backbone:
+		//	return new BackboneMaterial();
 
 	case MAT_TAG_SeriesMaterial:
 		return new SeriesMaterial();
@@ -1936,11 +1936,11 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	case MAT_TAG_ENTMaterial:
 		return new ENTMaterial();
 
-	//case MAT_TAG_GNG:
-	//	return new GNGMaterial();
+		//case MAT_TAG_GNG:
+		//	return new GNGMaterial();
 
-	//case MAT_TAG_Ratchet:
-	//	return new Ratchet();
+		//case MAT_TAG_Ratchet:
+		//	return new Ratchet();
 #if defined(OPSDEF_UNIAXIAL_FEDEAS)
 	case MAT_TAG_FedeasBond1:
 		return new FedeasBond1Material();
@@ -1972,59 +1972,59 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	case MAT_TAG_FedeasSteel2:
 		return new FedeasSteel2Material();
 #endif // OPSDEF_UNIAXIAL_FEDEAS
-	//case MAT_TAG_DrainBilinear:
-	//	return new DrainBilinearMaterial();
+		//case MAT_TAG_DrainBilinear:
+		//	return new DrainBilinearMaterial();
 
 	case MAT_TAG_HyperbolicGapMaterial:
 		return new HyperbolicGapMaterial();
 
-	//case MAT_TAG_ImpactMaterial:
-	//	return new ImpactMaterial();
+		//case MAT_TAG_ImpactMaterial:
+		//	return new ImpactMaterial();
 
-	//case MAT_TAG_Hertzdamp:
-	//	return new Hertzdamp();
+		//case MAT_TAG_Hertzdamp:
+		//	return new Hertzdamp();
 
-	//case MAT_TAG_JankowskiImpact:
-	//	return new JankowskiImpact();
+		//case MAT_TAG_JankowskiImpact:
+		//	return new JankowskiImpact();
 
-	//case MAT_TAG_ViscoelasticGap:
-	//	return new ViscoelasticGap();
+		//case MAT_TAG_ViscoelasticGap:
+		//	return new ViscoelasticGap();
 
-	//case MAT_TAG_Bilin:
-	//	return new Bilin();
+		//case MAT_TAG_Bilin:
+		//	return new Bilin();
 
-	//case MAT_TAG_DrainClough1:
-	//	return new DrainClough1Material();
+		//case MAT_TAG_DrainClough1:
+		//	return new DrainClough1Material();
 
-	//case MAT_TAG_DrainClough2:
-	//	return new DrainClough2Material();
+		//case MAT_TAG_DrainClough2:
+		//	return new DrainClough2Material();
 
-	//case MAT_TAG_DrainPinch1:
-	//	return new DrainPinch1Material();
+		//case MAT_TAG_DrainPinch1:
+		//	return new DrainPinch1Material();
 
 	case MAT_TAG_MinMax:
 		return new MinMaxMaterial();
 
-	//case MAT_TAG_InitStrain:
-	//	return new InitStrainMaterial();
+		//case MAT_TAG_InitStrain:
+		//	return new InitStrainMaterial();
 
-	//case MAT_TAG_InitStress:
-	//	return new InitStressMaterial();
+		//case MAT_TAG_InitStress:
+		//	return new InitStressMaterial();
 
-	//case MAT_TAG_Bond_SP01:
-	//	return new Bond_SP01();
+		//case MAT_TAG_Bond_SP01:
+		//	return new Bond_SP01();
 
-	//case MAT_TAG_FRCC:
-	//	return new FRCC();
+		//case MAT_TAG_FRCC:
+		//	return new FRCC();
 
-	//case MAT_TAG_SimpleFractureMaterial:
-	//	return new SimpleFractureMaterial();
+		//case MAT_TAG_SimpleFractureMaterial:
+		//	return new SimpleFractureMaterial();
 
-	//case MAT_TAG_ConfinedConcrete01:
-	//	return new ConfinedConcrete01();
+		//case MAT_TAG_ConfinedConcrete01:
+		//	return new ConfinedConcrete01();
 
-	//case MAT_TAG_FRPConfinedConcrete:
-	//	return new FRPConfinedConcrete();
+		//case MAT_TAG_FRPConfinedConcrete:
+		//	return new FRPConfinedConcrete();
 
 	case MAT_TAG_ConcreteCM:
 		return new ConcreteCM();
@@ -2032,35 +2032,35 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	case MAT_TAG_BarSlip:
 		return new BarSlipMaterial();
 
-	//case MAT_TAG_HystereticPoly:			// Salvatore Sessa
-	//	return new HystereticPoly();
+		//case MAT_TAG_HystereticPoly:			// Salvatore Sessa
+		//	return new HystereticPoly();
 
-	//case MAT_TAG_HystereticSmooth:			// Salvatore Sessa
-	//	return new HystereticSmooth();
+		//case MAT_TAG_HystereticSmooth:			// Salvatore Sessa
+		//	return new HystereticSmooth();
 
-	//case MAT_TAG_HystereticAsym:			// Salvatore Sessa
-	//	return new HystereticAsym();
+		//case MAT_TAG_HystereticAsym:			// Salvatore Sessa
+		//	return new HystereticAsym();
 
-	//case MAT_TAG_DowelType:
-	//	return new DowelType();
+		//case MAT_TAG_DowelType:
+		//	return new DowelType();
 
-	//case MAT_TAG_DuctileFracture:
-	//	return new DuctileFracture();
+		//case MAT_TAG_DuctileFracture:
+		//	return new DuctileFracture();
 
-	//case MAT_TAG_GMG_CyclicReinforcedConcrete:
-	//	return new GMG_CyclicReinforcedConcrete();
+		//case MAT_TAG_GMG_CyclicReinforcedConcrete:
+		//	return new GMG_CyclicReinforcedConcrete();
 
 	case MAT_TAG_Pinching4:
 		return new Pinching4Material();
 
-	//case MAT_TAG_CFSSSWP:
-	//	return new CFSSSWP();
+		//case MAT_TAG_CFSSSWP:
+		//	return new CFSSSWP();
 
-	//case MAT_TAG_CFSWSWP:
-	//	return new CFSWSWP();
+		//case MAT_TAG_CFSWSWP:
+		//	return new CFSWSWP();
 
-	//case MAT_TAG_SAWSMaterial:
-	//	return new SAWSMaterial();
+		//case MAT_TAG_SAWSMaterial:
+		//	return new SAWSMaterial();
 
 	case MAT_TAG_KikuchiAikenHDR:
 		return new KikuchiAikenHDR();
@@ -2098,35 +2098,35 @@ FEM_ObjectBrokerAllClasses::getNewSection(int classTag)
 	case SEC_TAG_Elastic3d:
 		return new ElasticSection3d();
 
-	//case SEC_TAG_ElasticShear2d:
-	//	return new ElasticShearSection2d();
+		//case SEC_TAG_ElasticShear2d:
+		//	return new ElasticShearSection2d();
 
-	//case SEC_TAG_ElasticBDShear2d:
-	//	return new ElasticBDShearSection2d();
+		//case SEC_TAG_ElasticBDShear2d:
+		//	return new ElasticBDShearSection2d();
 
-	//case SEC_TAG_ElasticShear3d:
-	//	return new ElasticShearSection3d();
+		//case SEC_TAG_ElasticShear3d:
+		//	return new ElasticShearSection3d();
 
-	//case SEC_TAG_ElasticTube3d:
-	//	return new ElasticTubeSection3d();
+		//case SEC_TAG_ElasticTube3d:
+		//	return new ElasticTubeSection3d();
 
-	//case SEC_TAG_ElasticWarpingShear2d:
-	//	return new ElasticWarpingShearSection2d();
+		//case SEC_TAG_ElasticWarpingShear2d:
+		//	return new ElasticWarpingShearSection2d();
 
-	//case SEC_TAG_Generic1d:
-	//	return new GenericSection1d();
+		//case SEC_TAG_Generic1d:
+		//	return new GenericSection1d();
 
-		//case SEC_TAG_GenericNd:
-		//return new GenericSectionNd();	     
+			//case SEC_TAG_GenericNd:
+			//return new GenericSectionNd();	     
 
 	case SEC_TAG_Aggregator:
 		return new SectionAggregator();
 
-	//case SEC_TAG_Parallel:
-	//	return new ParallelSection();
+		//case SEC_TAG_Parallel:
+		//	return new ParallelSection();
 
-		//case SEC_TAG_Fiber:
-		//return new FiberSection();
+			//case SEC_TAG_Fiber:
+			//return new FiberSection();
 
 	case SEC_TAG_FiberSection2d:
 		return new FiberSection2d();
@@ -2143,17 +2143,17 @@ FEM_ObjectBrokerAllClasses::getNewSection(int classTag)
 	case SEC_TAG_NDFiberSection2d:
 		return new NDFiberSection2d();
 
-	//case SEC_TAG_NDFiberSectionWarping2d:
-	//	return new NDFiberSectionWarping2d();
+		//case SEC_TAG_NDFiberSectionWarping2d:
+		//	return new NDFiberSectionWarping2d();
 
 	case SEC_TAG_NDFiberSection3d:
 		return new NDFiberSection3d();
 
-	//case SEC_TAG_FiberSectionAsym3d:
-	//	return new FiberSectionAsym3d(); //Xinlong Du
+		//case SEC_TAG_FiberSectionAsym3d:
+		//	return new FiberSectionAsym3d(); //Xinlong Du
 
-	//case SEC_TAG_FiberSectionWarping3d:
-	//	return new FiberSectionWarping3d();
+		//case SEC_TAG_FiberSectionWarping3d:
+		//	return new FiberSectionWarping3d();
 
 	case SEC_TAG_ElasticPlateSection:
 		return new ElasticPlateSection();
@@ -2208,23 +2208,23 @@ FEM_ObjectBrokerAllClasses::getNewNDMaterial(int classTag)
 	case ND_TAG_ElasticIsotropicPlaneStress2d:
 		return new ElasticIsotropicPlaneStress2D();
 
-	//case ND_TAG_ElasticIsotropicAxiSymm:
-	//	return new ElasticIsotropicAxiSymm();
+		//case ND_TAG_ElasticIsotropicAxiSymm:
+		//	return new ElasticIsotropicAxiSymm();
 
 	case ND_TAG_ElasticIsotropicPlateFiber:
 		return new ElasticIsotropicPlateFiber();
 
-	//case ND_TAG_ElasticIsotropicBeamFiber:
-	//	return new ElasticIsotropicBeamFiber();
+		//case ND_TAG_ElasticIsotropicBeamFiber:
+		//	return new ElasticIsotropicBeamFiber();
 
-	//case ND_TAG_ElasticIsotropicBeamFiber2d:
-	//	return new ElasticIsotropicBeamFiber2d();
+		//case ND_TAG_ElasticIsotropicBeamFiber2d:
+		//	return new ElasticIsotropicBeamFiber2d();
 
-	//case ND_TAG_ElasticIsotropicThreeDimensional:
-	//	return new ElasticIsotropicThreeDimensional();
+		//case ND_TAG_ElasticIsotropicThreeDimensional:
+		//	return new ElasticIsotropicThreeDimensional();
 
-	//case ND_TAG_ElasticOrthotropicThreeDimensional:
-	//	return new ElasticOrthotropicThreeDimensional();
+		//case ND_TAG_ElasticOrthotropicThreeDimensional:
+		//	return new ElasticOrthotropicThreeDimensional();
 
 	case ND_TAG_ElasticOrthotropicPlaneStress:
 		return new ElasticOrthotropicPlaneStress();
@@ -2253,11 +2253,11 @@ FEM_ObjectBrokerAllClasses::getNewNDMaterial(int classTag)
 	case ND_TAG_J2ThreeDimensional:
 		return new J2ThreeDimensional();
 
-	//case ND_TAG_SimplifiedJ2:
-	//	return new SimplifiedJ2();
+		//case ND_TAG_SimplifiedJ2:
+		//	return new SimplifiedJ2();
 
-	//case ND_TAG_PlaneStressSimplifiedJ2:
-	//	return new PlaneStressSimplifiedJ2();
+		//case ND_TAG_PlaneStressSimplifiedJ2:
+		//	return new PlaneStressSimplifiedJ2();
 
 	case ND_TAG_PlaneStressMaterial:
 		return new PlaneStressMaterial();
@@ -2287,12 +2287,12 @@ FEM_ObjectBrokerAllClasses::getNewNDMaterial(int classTag)
 	case ND_TAG_PlateFromPlaneStressMaterial:
 		return new PlateFromPlaneStressMaterial();
 
-	//case ND_TAG_ConcreteS:
-	//	return new ConcreteS();
+		//case ND_TAG_ConcreteS:
+		//	return new ConcreteS();
 
-	//case ND_TAG_PlaneStressUserMaterial:
-	//	return new PlaneStressUserMaterial();
-		//end Yuli Huang & Xinzheng Lu 
+		//case ND_TAG_PlaneStressUserMaterial:
+		//	return new PlaneStressUserMaterial();
+			//end Yuli Huang & Xinzheng Lu 
 
 	case ND_TAG_PlateFiberMaterial:
 		return new PlateFiberMaterial();
@@ -2375,32 +2375,32 @@ FEM_ObjectBrokerAllClasses::getNewNDMaterial(int classTag)
 		return new InitialStateAnalysisWrapper();
 	case ND_TAG_stressDensity:
 		return new stressDensity();
-	//case ND_TAG_CycLiqCP3D:
-	//	return new CycLiqCP3D();
+		//case ND_TAG_CycLiqCP3D:
+		//	return new CycLiqCP3D();
 
-	//case ND_TAG_CycLiqCPPlaneStrain:
-	//	return new CycLiqCPPlaneStrain();
+		//case ND_TAG_CycLiqCPPlaneStrain:
+		//	return new CycLiqCPPlaneStrain();
 
-	//case ND_TAG_CycLiqCPSP3D:
-	//	return new CycLiqCPSP3D();
+		//case ND_TAG_CycLiqCPSP3D:
+		//	return new CycLiqCPSP3D();
 
-	//case ND_TAG_CycLiqCPSPPlaneStrain:
-	//	return new CycLiqCPSPPlaneStrain();
+		//case ND_TAG_CycLiqCPSPPlaneStrain:
+		//	return new CycLiqCPSPPlaneStrain();
 
-	//case ND_TAG_InitStressNDMaterial:
-	//	return new InitStressNDMaterial();
+		//case ND_TAG_InitStressNDMaterial:
+		//	return new InitStressNDMaterial();
 
-	//case ND_TAG_InitStrainNDMaterial:
-	//	return new InitStrainNDMaterial();
+		//case ND_TAG_InitStrainNDMaterial:
+		//	return new InitStrainNDMaterial();
 
-	//case ND_TAG_MinMaxNDMaterial:
-	//	return new MinMaxNDMaterial();
+		//case ND_TAG_MinMaxNDMaterial:
+		//	return new MinMaxNDMaterial();
 
-	//case ND_TAG_ASDConcrete3DMaterial:
-	//	return new ASDConcrete3DMaterial();
+		//case ND_TAG_ASDConcrete3DMaterial:
+		//	return new ASDConcrete3DMaterial();
 
-	//case ND_TAG_PlasticDamageConcrete3d:
-	//	return new PlasticDamageConcrete3d();
+		//case ND_TAG_PlasticDamageConcrete3d:
+		//	return new PlasticDamageConcrete3d();
 
 	case ND_TAG_PlasticDamageConcretePlaneStress:
 		return new PlasticDamageConcretePlaneStress();
@@ -2411,14 +2411,14 @@ FEM_ObjectBrokerAllClasses::getNewNDMaterial(int classTag)
 	case ND_TAG_SmearedSteelDoubleLayerT2DMaterial01:
 		return new SmearedSteelDoubleLayerT2DMaterial01();
 
-	//case ND_TAG_SAniSandMS:
-	//	return new SAniSandMS();
+		//case ND_TAG_SAniSandMS:
+		//	return new SAniSandMS();
 
-	//case ND_TAG_SAniSandMSPlaneStrain:
-	//	return new SAniSandMSPlaneStrain();
+		//case ND_TAG_SAniSandMSPlaneStrain:
+		//	return new SAniSandMSPlaneStrain();
 
-	//case ND_TAG_SAniSandMS3D:
-	//	return new SAniSandMS3D();
+		//case ND_TAG_SAniSandMS3D:
+		//	return new SAniSandMS3D();
 
 
 	default:
@@ -2454,17 +2454,17 @@ FEM_ObjectBrokerAllClasses::getNewFrictionModel(int classTag)
 	case FRN_TAG_Coulomb:
 		return new Coulomb();
 
-	//case FRN_TAG_VelDependent:
-	//	return new VelDependent();
+		//case FRN_TAG_VelDependent:
+		//	return new VelDependent();
 
-	//case FRN_TAG_VelPressureDep:
-	//	return new VelPressureDep();
+		//case FRN_TAG_VelPressureDep:
+		//	return new VelPressureDep();
 
-	//case FRN_TAG_VelDepMultiLinear:
-	//	return new VelDepMultiLinear();
+		//case FRN_TAG_VelDepMultiLinear:
+		//	return new VelDepMultiLinear();
 
-	//case FRN_TAG_VelNormalFrcDep:
-	//	return new VelNormalFrcDep();
+		//case FRN_TAG_VelNormalFrcDep:
+		//	return new VelNormalFrcDep();
 
 	default:
 		opserr << "FEM_ObjectBrokerAllClasses::getNewFrictionModel - ";
@@ -2525,8 +2525,8 @@ FEM_ObjectBrokerAllClasses::getNewLoadPattern(int classTag)
 	case PATTERN_TAG_MultiSupportPattern:
 		return new MultiSupportPattern();
 
-	//case PATTERN_TAG_DRMLoadPattern:
-	//	return new DRMLoadPatternWrapper();
+		//case PATTERN_TAG_DRMLoadPattern:
+		//	return new DRMLoadPatternWrapper();
 
 #ifdef _H5DRM
 	case PATTERN_TAG_H5DRM:
@@ -2730,8 +2730,8 @@ FEM_ObjectBrokerAllClasses::getPtrNewRecorder(int classTag)
 	case RECORDER_TAGS_EnvelopeElementRecorder:
 		return new EnvelopeElementRecorder();
 
-	//case RECORDER_TAGS_VTK_Recorder:
-	//	return new VTK_Recorder();
+		//case RECORDER_TAGS_VTK_Recorder:
+		//	return new VTK_Recorder();
 
 	case RECORDER_TAGS_DriftRecorder:
 		return new DriftRecorder();
@@ -2739,8 +2739,8 @@ FEM_ObjectBrokerAllClasses::getPtrNewRecorder(int classTag)
 	case RECORDER_TAGS_FeViewer:
 		return 0;
 
-	//case RECORDER_TAGS_GmshRecorder:
-	//	return new GmshRecorder();
+		//case RECORDER_TAGS_GmshRecorder:
+		//	return new GmshRecorder();
 #ifdef _HDF5
 	case RECORDER_TAGS_MPCORecorder:
 		return new MPCORecorder();

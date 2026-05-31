@@ -18,15 +18,14 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Source: /usr/local/cvs/OpenSees/SRC/material/uniaxial/SmoothIMK.cpp,v $
-
-// Written: S. A. Jalali 10/2019
-// Adding Cyclic and in-cycle deterioration modes to steel02 UniaxialMaterial
+// Written: M. Gholami
+// GVDHysteretic is now able to simulate coplex pinched behaviour. Peakoriented, bilnear, and combination of the three are also possible.
+// Read more: https://www.sciencedirect.com/science/article/pii/S014102962600948X
 
 #include <math.h>
 
 #include <stdlib.h>
-#include <SmoothIMK.h>
+#include <GVDHysteretic.h>
 #include <float.h>
 #include <Channel.h>
 #include <Information.h>
@@ -40,9 +39,9 @@
 static int numThisCall = 0;
 void printSyntax()
 {
-	opserr << "------ SmoothIMK unaxialMaterial -------\n";
+	opserr << "------ GVDHysteretic unaxialMaterial -------\n";
 	opserr << "-------Syntax:\n";
-	opserr << "-------UniaxialMaterial SmoothIMK $matTag,\n";
+	opserr << "-------UniaxialMaterial GVDHysteretic $matTag,\n";
 	opserr << "				 -posBackBone pd1 pf1 pd2 pf2 pd3 pf3 ... <-gap gap=0>\n";
 	opserr << "        <-negBackBone nd1 nf1 nd2 nf2 nd3 nf3 ... <-gap gap=0>>\n";
 	opserr << "        <-sigInit sigInit>\n";
@@ -67,15 +66,15 @@ void printSyntax()
 //	return false;
 //}
 void*
-OPS_SmoothIMK()
+OPS_GVDHysteretic()
 {
 	if (numThisCall == 0) {
 		numThisCall = 1;
 	}
 	// Pointer to a uniaxial material that will be returned
 	UniaxialMaterial* theMaterial = 0;
-	// List of recognized option strings for SmoothIMK
-	//const std::vector<const char*> smoothIMKOptions = {
+	// List of recognized option strings for GVDHysteretic
+	//const std::vector<const char*> GVDHystereticOptions = {
 	//		"-negBackBone",
 	//		"-sigInit",
 	//		"-gap",
@@ -89,13 +88,13 @@ OPS_SmoothIMK()
 	int numData = 1;
 	int tag = 0;
 	if (OPS_GetIntInput(&numData, &tag) != 0) {
-		opserr << "WARNING invalid uniaxialMaterial SmoothIMK tag" << endln;
+		opserr << "WARNING invalid uniaxialMaterial GVDHysteretic tag" << endln;
 		printSyntax();
 		return 0;
 	}
 
 	if (OPS_GetNumRemainingInputArgs() < 7) {
-		opserr << "Invalid SmoothIMK #args for: " << tag << " see the syntax" << endln;
+		opserr << "Invalid GVDHysteretic #args for: " << tag << " see the syntax" << endln;
 		printSyntax();
 		return 0;
 	}
@@ -128,12 +127,12 @@ OPS_SmoothIMK()
 			n = pd.size();
 			if (pf.size() != n)
 			{
-				opserr << "SmoothIMK:: Error: the number of positive force and displacement inputs are not the same for material with tag: " << tag << endln;
+				opserr << "GVDHysteretic:: Error: the number of positive force and displacement inputs are not the same for material with tag: " << tag << endln;
 				return 0;
 			}
 			if (n < 2)
 			{
-				opserr << "SmoothIMK:: Error: at least two positive force and displacement inputs are required for material with tag: " << tag << endln;
+				opserr << "GVDHysteretic:: Error: at least two positive force and displacement inputs are required for material with tag: " << tag << endln;
 				return 0;
 			}
 			for (int i = 0; i < n - 1; i++)
@@ -142,7 +141,7 @@ OPS_SmoothIMK()
 				{
 					char buf[16];
 					snprintf(buf, sizeof(buf), "pd%d >= pd%d", i, i + 1);
-					opserr << "SmoothIMK:: Error: " << buf << "in material with tag: " << tag << endln;
+					opserr << "GVDHysteretic:: Error: " << buf << "in material with tag: " << tag << endln;
 					printSyntax();
 					return 0;
 				}
@@ -151,7 +150,7 @@ OPS_SmoothIMK()
 			if (strcmp(option, "-gap") == 0)
 			{
 				if (OPS_GetDoubleInput(&numData, &gapP) != 0) {
-					opserr << "SmoothIMK:: invalid positive gap for material : " << tag << endln;
+					opserr << "GVDHysteretic:: invalid positive gap for material : " << tag << endln;
 					return 0;
 				}
 				gapN = -gapP;
@@ -172,12 +171,12 @@ OPS_SmoothIMK()
 			n = nd.size();
 			if (nf.size() != n)
 			{
-				opserr << "SmoothIMK:: Error: the number of negative force and displacement inputs are not the same for material with tag: " << tag << endln;
+				opserr << "GVDHysteretic:: Error: the number of negative force and displacement inputs are not the same for material with tag: " << tag << endln;
 				return 0;
 			}
 			if (n < 2)
 			{
-				opserr << "SmoothIMK:: Error: at least two negative force and displacement inputs are required for material with tag: " << tag << endln;
+				opserr << "GVDHysteretic:: Error: at least two negative force and displacement inputs are required for material with tag: " << tag << endln;
 				return 0;
 			}
 			for (int i = 0; i < n - 1; i++)
@@ -186,7 +185,7 @@ OPS_SmoothIMK()
 				{
 					char buf[16];
 					snprintf(buf, sizeof(buf), "nd%d <= nd%d", i, i + 1);
-					opserr << "SmoothIMK:: Error: " << buf << "in material with tag: " << tag << endln;
+					opserr << "GVDHysteretic:: Error: " << buf << "in material with tag: " << tag << endln;
 					printSyntax();
 					return 0;
 				}
@@ -195,7 +194,7 @@ OPS_SmoothIMK()
 			if (strcmp(option, "-gap") == 0)
 			{
 				if (OPS_GetDoubleInput(&numData, &gapN) != 0) {
-					opserr << "SmoothIMK:: invalid negative gap for material : " << tag << endln;
+					opserr << "GVDHysteretic:: invalid negative gap for material : " << tag << endln;
 					return 0;
 				}
 				gapN = -fabs(gapN);
@@ -205,31 +204,31 @@ OPS_SmoothIMK()
 		}
 		else if (strcmp(option, "-sigInit") == 0) {
 			if (OPS_GetDoubleInput(&numData, &sigInit) != 0) {
-				opserr << "SmoothIMK:: invalid sigInit for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid sigInit for material : " << tag << endln;
 				return 0;
 			}
 		}
 		else if (strcmp(option, "-deterioration") == 0) {
 			if (OPS_GetDoubleInput(&numData, &gamaS) != 0) {
-				opserr << "SmoothIMK:: invalid gamaS for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid gamaS for material : " << tag << endln;
 				return 0;
 			}
 			if (OPS_GetDoubleInput(&numData, &cS) != 0) {
-				opserr << "SmoothIMK:: invalid cS for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid cS for material : " << tag << endln;
 				return 0;
 			}
 			if (OPS_GetDoubleInput(&numData, &gamaUE) != 0) {
-				opserr << "SmoothIMK:: invalid gamaUloadE for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid gamaUloadE for material : " << tag << endln;
 				return 0;
 			}
 			if (OPS_GetDoubleInput(&numData, &cUE) != 0) {
-				opserr << "SmoothIMK:: invalid cUloadE for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid cUloadE for material : " << tag << endln;
 				return 0;
 			}
 		}
 		else if (strcmp(option, "-transition") == 0) {
 			if (OPS_GetDoubleInput(&numData, &r0) != 0) {
-				opserr << "SmoothIMK:: invalid r0 for material : " << tag << endln;
+				opserr << "GVDHysteretic:: invalid r0 for material : " << tag << endln;
 				return 0;
 			}
 			if (OPS_GetDoubleInput(&numData, &r1) != 0) {
@@ -238,7 +237,7 @@ OPS_SmoothIMK()
 			}
 			else {
 				if (OPS_GetDoubleInput(&numData, &r2) != 0) {
-					opserr << "SmoothIMK:: invalid r2 for material : " << tag << endln;
+					opserr << "GVDHysteretic:: invalid r2 for material : " << tag << endln;
 					return 0;
 				}
 			}
@@ -257,7 +256,7 @@ OPS_SmoothIMK()
 				{
 					if (OPS_GetDoubleInput(&numData, &bilinEndAmpPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid positive startAmp for peakOriented rule for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid positive startAmp for peakOriented rule for material : " << tag << endln;
 						return 0;
 					}
 				}
@@ -265,7 +264,7 @@ OPS_SmoothIMK()
 				{
 					if (OPS_GetDoubleInput(&numData, &unloadingStiffFacPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid positive unloading stiffness factor for material: " << tag << endln;
+						opserr << "GVDHysteretic:: invalid positive unloading stiffness factor for material: " << tag << endln;
 						return 0;
 					}
 					OPS_GetDoubleInput(&numData, &sigPenetFacP);
@@ -275,12 +274,12 @@ OPS_SmoothIMK()
 					ruleP = 3;
 					if (OPS_GetDoubleInput(&numData, &alphaPinchPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid positive pinching alpha for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid positive pinching alpha for material : " << tag << endln;
 						return 0;
 					}
 					if (OPS_GetDoubleInput(&numData, &pinchYPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid positive stress pinching factor for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid positive stress pinching factor for material : " << tag << endln;
 						return 0;
 					}
 					option = OPS_GetString();
@@ -289,12 +288,12 @@ OPS_SmoothIMK()
 					{
 						if (OPS_GetDoubleInput(&numData, &betaPinchPos) != 0)
 						{
-							opserr << "SmoothIMK:: invalid positive pinching factor power for material : " << tag << endln;
+							opserr << "GVDHysteretic:: invalid positive pinching factor power for material : " << tag << endln;
 							return 0;
 						}
 						if (OPS_GetDoubleInput(&numData, &epsPinchPos) != 0)
 						{
-							opserr << "SmoothIMK:: invalid positive pinching power normalizer for material : " << tag << endln;
+							opserr << "GVDHysteretic:: invalid positive pinching power normalizer for material : " << tag << endln;
 							return 0;
 						}
 					}
@@ -323,7 +322,7 @@ OPS_SmoothIMK()
 				{
 					if (OPS_GetDoubleInput(&numData, &bilinEndAmpNeg) != 0)
 					{
-						opserr << "SmoothIMK:: invalid negative startAmp for peakOriented rule for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid negative startAmp for peakOriented rule for material : " << tag << endln;
 						return 0;
 					}
 				}
@@ -331,7 +330,7 @@ OPS_SmoothIMK()
 				{
 					if (OPS_GetDoubleInput(&numData, &unloadingStiffFacNeg) != 0)
 					{
-						opserr << "SmoothIMK:: invalid negative unloading stiffness factor for material: " << tag << endln;
+						opserr << "GVDHysteretic:: invalid negative unloading stiffness factor for material: " << tag << endln;
 						return 0;
 					}
 					OPS_GetDoubleInput(&numData, &sigPenetFacN);
@@ -341,12 +340,12 @@ OPS_SmoothIMK()
 					ruleN = 3;
 					if (OPS_GetDoubleInput(&numData, &alphaPinchNeg) != 0)
 					{
-						opserr << "SmoothIMK:: invalid negative pinching alpha for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid negative pinching alpha for material : " << tag << endln;
 						return 0;
 					}
 					if (OPS_GetDoubleInput(&numData, &pinchYNeg) != 0)
 					{
-						opserr << "SmoothIMK:: invalid negative stress pinching factor for material : " << tag << endln;
+						opserr << "GVDHysteretic:: invalid negative stress pinching factor for material : " << tag << endln;
 						return 0;
 					}
 					option = OPS_GetString();
@@ -355,12 +354,12 @@ OPS_SmoothIMK()
 					{
 						if (OPS_GetDoubleInput(&numData, &betaPinchNeg) != 0)
 						{
-							opserr << "SmoothIMK:: invalid negative pinching factor power for material : " << tag << endln;
+							opserr << "GVDHysteretic:: invalid negative pinching factor power for material : " << tag << endln;
 							return 0;
 						}
 						if (OPS_GetDoubleInput(&numData, &epsPinchNeg) != 0)
 						{
-							opserr << "SmoothIMK:: invalid negative pinching power normalizer for material : " << tag << endln;
+							opserr << "GVDHysteretic:: invalid negative pinching power normalizer for material : " << tag << endln;
 							return 0;
 						}
 					}
@@ -381,10 +380,10 @@ OPS_SmoothIMK()
 				//OPS_ResetCurrentInputArg(-1);
 				char data[128];
 				OPS_GetStringFromAll(data, 128);
-				opserr << "SmoothIMK::Error: expected string switch but got non-string input: " << data << " for material with tag: " << tag << endln;
+				opserr << "GVDHysteretic::Error: expected string switch but got non-string input: " << data << " for material with tag: " << tag << endln;
 			}
 			else
-				opserr << "SmoothIMK::Error: Invalid option: " << option << endln;
+				opserr << "GVDHysteretic::Error: Invalid option: " << option << endln;
 			return 0;
 		}
 	}
@@ -402,14 +401,14 @@ OPS_SmoothIMK()
 		}
 	}
 	// Parsing was successful, allocate the material
-	theMaterial = new SmoothIMK(tag, pd, pf, nd, nf,
+	theMaterial = new GVDHysteretic(tag, pd, pf, nd, nf,
 		gamaS, cS, gamaUE, cUE, r0, r1, r2,
 		ruleP, gapP, alphaPinchPos, pinchYPos, betaPinchPos, epsPinchPos, sigPenetFacP, bilinEndAmpPos, unloadingStiffFacPos,
 		ruleN, gapN, alphaPinchNeg, pinchYNeg, betaPinchNeg, epsPinchNeg, sigPenetFacN, bilinEndAmpNeg, unloadingStiffFacNeg, sigInit);
 
 
 	if (theMaterial == 0) {
-		opserr << "WARNING could not create uniaxialMaterial of type SmoothIMK\n";
+		opserr << "WARNING could not create uniaxialMaterial of type GVDHysteretic\n";
 		return 0;
 	}
 
@@ -428,7 +427,7 @@ double pinchDx(double x, double alphaPinch, double epsPinch, double betaPinch, d
 	return pow(alphaPinch, pow(epsPinch * x0 / x, betaPinch)) * x;
 }
 
-SmoothIMK::SmoothIMK(int tag,
+GVDHysteretic::GVDHysteretic(int tag,
 	std::vector<double> _pd, std::vector<double> _pf,
 	std::vector<double> _nd, std::vector<double> _nf,
 	double _gamaS, double _cS,
@@ -439,7 +438,7 @@ SmoothIMK::SmoothIMK(int tag,
 	int _cyclicRuleN, double _gapN, double _alphaPinchNeg, double _pinchYNeg,
 	double _betaPinchNeg, double _epsPinchNeg, double _sigPenetFacNeg, double _bilinEndAmpNeg, double _unloadingStiffFacNeg,
 	double sigInit) :
-	UniaxialMaterial(tag, MAT_TAG_SmoothIMK),
+	UniaxialMaterial(tag, MAT_TAG_GVDHysteretic),
 	pd(_pd), pf(_pf),
 	nd(_nd), nf(_nf),
 	cS(_cS), FailEnergS(_gamaS* pf[0] * pd[0]),
@@ -485,7 +484,7 @@ SmoothIMK::SmoothIMK(int tag,
 			{
 				if (fabs((*it - min) / min) > 0.01)
 				{
-					opserr << "SmoothIMK:: Error the positive backbone increase by more than 1 percent after descending: tag = " << tag << endln;
+					opserr << "GVDHysteretic:: Error the positive backbone increase by more than 1 percent after descending: tag = " << tag << endln;
 					exit(-1);
 				}
 				*it = 0.99 * min;	//apply small increase in post-residual strength to prevent zero slope
@@ -522,7 +521,7 @@ SmoothIMK::SmoothIMK(int tag,
 			{
 				if (fabs((*it - max) / max) > 0.01)
 				{
-					opserr << "SmoothIMK:: Error (tag = " << tag << " ) the negative backbone increase by more than 1 percent after descending!" << endln;
+					opserr << "GVDHysteretic:: Error (tag = " << tag << " ) the negative backbone increase by more than 1 percent after descending!" << endln;
 					exit(-1);
 				}
 				*it = 0.99 * max;	//apply small increase in post-residual strength to prevent zero slope
@@ -532,20 +531,20 @@ SmoothIMK::SmoothIMK(int tag,
 	revertToStart();
 }
 
-SmoothIMK::SmoothIMK(void) :
-	UniaxialMaterial(0, MAT_TAG_SmoothIMK)
+GVDHysteretic::GVDHysteretic(void) :
+	UniaxialMaterial(0, MAT_TAG_GVDHysteretic)
 {
 }
 
-SmoothIMK::~SmoothIMK(void)
+GVDHysteretic::~GVDHysteretic(void)
 {
 	// Does nothing
 }
 
 UniaxialMaterial*
-SmoothIMK::getCopy(void)
+GVDHysteretic::getCopy(void)
 {
-	SmoothIMK* theCopy = new SmoothIMK(this->getTag(), pd, pf, nd, nf, FailEnergS / pf[0] / pd[0], cS, FailEnergUnloadE / pf[0] / pd[0],
+	GVDHysteretic* theCopy = new GVDHysteretic(this->getTag(), pd, pf, nd, nf, FailEnergS / pf[0] / pd[0], cS, FailEnergUnloadE / pf[0] / pd[0],
 		cUnloadE, r0, r1, r2,
 		cyclicRuleP, gapP, alphaPinchPos, pinchYPos, betaPinchPos, epsPinchPos, sigPenetFacP, bilinEndAmpP, unloadingStiffFacPos,
 		cyclicRuleN, gapN, alphaPinchNeg, pinchYNeg, betaPinchNeg, epsPinchNeg, sigPenetFacN, bilinEndAmpN, unloadingStiffFacNeg,
@@ -555,40 +554,40 @@ SmoothIMK::getCopy(void)
 }
 
 double
-SmoothIMK::getInitialTangent(void)
+GVDHysteretic::getInitialTangent(void)
 {
 	return E0p;
 }
 
-double SmoothIMK::getStrain(void)
+double GVDHysteretic::getStrain(void)
 {
 	return eps;
 }
 
-double SmoothIMK::getStress(void)
+double GVDHysteretic::getStress(void)
 {
 	return sig;
 }
 
-double SmoothIMK::getTangent(void)
+double GVDHysteretic::getTangent(void)
 {
 	return e;
 }
 
 int
-SmoothIMK::setParameter(const char** argv, int argc, Parameter& param)
+GVDHysteretic::setParameter(const char** argv, int argc, Parameter& param)
 {
 	return -1;
 }
 
 int
-SmoothIMK::updateParameter(int parameterID, Information& info)
+GVDHysteretic::updateParameter(int parameterID, Information& info)
 {
 	return -1;
 }
 
 int
-SmoothIMK::commitState(void)
+GVDHysteretic::commitState(void)
 {
 	epsminP = epsmin;
 	epsmaxP = epsmax;
@@ -612,7 +611,7 @@ SmoothIMK::commitState(void)
 }
 
 int
-SmoothIMK::revertToLastCommit(void)
+GVDHysteretic::revertToLastCommit(void)
 {
 	epsmin = epsminP;
 	epsmax = epsmaxP;
@@ -635,9 +634,9 @@ SmoothIMK::revertToLastCommit(void)
 }
 
 int
-SmoothIMK::revertToStart(void)
+GVDHysteretic::revertToStart(void)
 {
-	EnergyP = 0;	//by SAJalali
+	EnergyP = 0;
 	fpDmgd = pf;
 	fnDmgd = nf;
 	E0p = pf[0] / pd[0];
@@ -686,7 +685,7 @@ SmoothIMK::revertToStart(void)
 }
 
 int
-SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
+GVDHysteretic::sendSelf(int commitTag, Channel& theChannel)
 {
 	int numPData = pd.size();
 	int numNData = nd.size();
@@ -751,27 +750,27 @@ SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
 	data(n++) = cyclicRuleN;
 
 	if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0) {
-		opserr << "SmoothIMK::sendSelf() - failed to sendSelf\n";
+		opserr << "GVDHysteretic::sendSelf() - failed to sendSelf\n";
 		return -1;
 	}
 	return 0;
 }
 
 int
-SmoothIMK::recvSelf(int commitTag, Channel& theChannel,
+GVDHysteretic::recvSelf(int commitTag, Channel& theChannel,
 	FEM_ObjectBroker& theBroker)
 {
 	static Vector data(69);	//assuming 45 fixed data members plus 20 positive and negative backbone data
 
 	if (theChannel.recvVector(this->getDbTag(), commitTag, data) < 0) {
-		opserr << "SmoothIMK::recvSelf() - failed to recvSelf\n";
+		opserr << "GVDHysteretic::recvSelf() - failed to recvSelf\n";
 		return -1;
 	}
 	int n = -1;
 	int numPData = data(n++);	// size of the data vector
 	int numNData = data(n++);	// size of the data vector
 	if (numPData + numNData > 20) {
-		opserr << "SmoothIMK::recvSelf() - Error: the number of positive and negative data exceeded the transfer limit\n";
+		opserr << "GVDHysteretic::recvSelf() - Error: the number of positive and negative data exceeded the transfer limit\n";
 		return -1;
 	}
 	this->setTag(data(n++));
@@ -842,9 +841,9 @@ SmoothIMK::recvSelf(int commitTag, Channel& theChannel,
 }
 
 void
-SmoothIMK::Print(OPS_Stream& s, int flag)
+GVDHysteretic::Print(OPS_Stream& s, int flag)
 {
-	//    s << "SmoothIMK:(strain, stress, tangent) " << eps << " " << sig << " " << e << endln;
+	//    s << "GVDHysteretic:(strain, stress, tangent) " << eps << " " << sig << " " << e << endln;
 	const char* endStr = endln;
 	if (flag == OPS_PRINT_PRINTMODEL_JSON)
 	{
@@ -852,7 +851,7 @@ SmoothIMK::Print(OPS_Stream& s, int flag)
 		s << "\t\t\t{";
 	}
 	s << "\"name \": \"" << this->getTag() << "\", " << endStr;
-	s << "\"type\": \"SmoothIMK\", " << endStr;
+	s << "\"type\": \"GVDHysteretic\", " << endStr;
 	//s << "\"pd1 \": " << pd1 << ", " << endStr;
 	//s << "\"pd2 \": " << pd2 << ", " << endStr;
 	//s << "\"pd3 \": " << pd3 << ", " << endStr;
@@ -871,7 +870,7 @@ SmoothIMK::Print(OPS_Stream& s, int flag)
 
 }
 
-Response* SmoothIMK::setResponse(const char** argv, int argc, OPS_Stream* theOutput)
+Response* GVDHysteretic::setResponse(const char** argv, int argc, OPS_Stream* theOutput)
 {
 	Response* theResponse = UniaxialMaterial::setResponse(argv, argc, theOutput);
 	if (theResponse != 0)
@@ -884,7 +883,7 @@ Response* SmoothIMK::setResponse(const char** argv, int argc, OPS_Stream* theOut
 	return 0;
 }
 
-int SmoothIMK::getResponse(int responseID, Information& matInformation)
+int GVDHysteretic::getResponse(int responseID, Information& matInformation)
 {
 	int res = 0;
 	res = UniaxialMaterial::getResponse(responseID, matInformation);
@@ -900,7 +899,7 @@ int SmoothIMK::getResponse(int responseID, Information& matInformation)
 	}
 }
 
-void SmoothIMK::updateDamage()
+void GVDHysteretic::updateDamage()
 {
 	if (sigP * sig < 0)
 	{
@@ -932,7 +931,7 @@ void SmoothIMK::updateDamage()
 					beta = pow(ExcurEnergy / (FailEnergS - EnergyP), cS);
 				if (beta > 0.9999)
 				{
-					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
+					opserr << "\nGVDHysteretic:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
 					beta = 0.9999;
 				}
 				double Fr = FrIndP != -1 ? pf[FrIndP] : 0.00001 * pf[0];
@@ -951,7 +950,7 @@ void SmoothIMK::updateDamage()
 					beta = pow(ExcurEnergy / (FailEnergUnloadE - EnergyP), cUnloadE);
 				if (beta > 0.9999)
 				{
-					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Unloading Stiffness loss\n" << endln;
+					opserr << "\nGVDHysteretic:" << this->getTag() << " WARNING! Complete Unloading Stiffness loss\n" << endln;
 					beta = 0.9999;
 				}
 				EunloadP *= (1. - beta);
@@ -983,7 +982,7 @@ void SmoothIMK::updateDamage()
 					beta = pow(ExcurEnergy / (FailEnergS - EnergyP), cS);
 				if (beta > 0.999 || beta < 0)
 				{
-					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
+					opserr << "\nGVDHysteretic:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
 					beta = 0.999;
 				}
 				double Fr = FrIndN != -1 ? nf[FrIndN] : 0.00001 * nf[0];
@@ -1001,7 +1000,7 @@ void SmoothIMK::updateDamage()
 					beta = pow(ExcurEnergy / (FailEnergUnloadE - EnergyP), cUnloadE);
 				if (beta > 0.9999)
 				{
-					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Unloading Stiffness loss\n" << endln;
+					opserr << "\nGVDHysteretic:" << this->getTag() << " WARNING! Complete Unloading Stiffness loss\n" << endln;
 					beta = 0.9999;
 				}
 				EunloadN *= (1. - beta);
@@ -1017,7 +1016,7 @@ void SmoothIMK::updateDamage()
 	}
 }
 
-int SmoothIMK::setTrialStrain(double trialStrain, double strainRate)
+int GVDHysteretic::setTrialStrain(double trialStrain, double strainRate)
 {
 	revertToLastCommit();
 	eps = trialStrain + (sigini > 0 ? sigini / E0p : sigini / E0n);
@@ -1074,7 +1073,7 @@ int SmoothIMK::setTrialStrain(double trialStrain, double strainRate)
 	return 0;
 }
 
-void SmoothIMK::changeBranch(bool isReturning)
+void GVDHysteretic::changeBranch(bool isReturning)
 {
 	bool shouldPinch = (
 		(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmpP) ||
@@ -1101,7 +1100,7 @@ void SmoothIMK::changeBranch(bool isReturning)
 	branch = cyclicRule == 1 || !shouldPinch ? 0 : cyclicRule == 2 ? 1006 : 1003;
 }
 
-int SmoothIMK::nextBranch(int branch, bool shouldPinch)
+int GVDHysteretic::nextBranch(int branch, bool shouldPinch)
 {
 	const double& epsPeak = isPosDir ? epsmax : epsmin;
 	const std::vector<double>& d = isPosDir ? pd : nd;
@@ -1132,7 +1131,7 @@ int SmoothIMK::nextBranch(int branch, bool shouldPinch)
 
 }
 
-void SmoothIMK::updateAsymptote()
+void GVDHysteretic::updateAsymptote()
 {
 	//updates: epsr, sigr, epss0, sigs0, epsLimit, slopeRat, R0
 	const std::vector<double>& gd = isPosDir ? gpd : gnd;
@@ -1326,7 +1325,7 @@ void SmoothIMK::updateAsymptote()
 		}
 	}
 	else {
-		opserr << "ERROR in SmoothIMK::updateAsymptote: unrecognized branch: " << branch << endln;
+		opserr << "ERROR in GVDHysteretic::updateAsymptote: unrecognized branch: " << branch << endln;
 		exit(-1);
 	}
 	double k1 = (sigs0 - sigr) / (epss0 - epsr);
@@ -1334,7 +1333,7 @@ void SmoothIMK::updateAsymptote()
 	computeR0(k1, k2, E1, dy);
 }
 
-void SmoothIMK::getEnvelope(double eps, bool onPlusSide, double& targStress, int& targBranch, double& k, double& limitEps)
+void GVDHysteretic::getEnvelope(double eps, bool onPlusSide, double& targStress, int& targBranch, double& k, double& limitEps)
 {
 	const std::vector<double>& dVec = eps > 0 ? gpd : gnd;
 	const std::vector<double>& fVec = eps > 0 ? fpDmgd : fnDmgd;
@@ -1398,7 +1397,7 @@ void SmoothIMK::getEnvelope(double eps, bool onPlusSide, double& targStress, int
 }
 
 
-void SmoothIMK::computeR0(double k1, double k2, double E1, double dy)
+void GVDHysteretic::computeR0(double k1, double k2, double E1, double dy)
 {
 	R0 = r0;
 	if (r1 != 0.0)
