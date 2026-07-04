@@ -84,3 +84,58 @@ Department of Civil Engineering
 University of Ottawa
 
 ---
+
+
+## PyPI installation
+
+The GVDHysteretic material is also available through PyPI as a precompiled Windows Python package. This allows users to install and use the material without compiling OpenSees from source.
+
+### Installation
+
+```bash
+pip install gvd-openseespy
+```
+
+Current package support:
+
+- Windows 64-bit
+- Python 3.13
+
+### Python usage
+
+```python
+import gvd_openseespy.opensees as ops
+
+ops.wipe()
+ops.model("basic", "-ndm", 1, "-ndf", 1)
+
+ops.uniaxialMaterial(
+    "GVDHysteretic",
+    1,
+    "-posBackBone",
+    0.01, 100.0,
+    0.02, 120.0,
+    0.04, 80.0,
+)
+```
+
+### Verification
+
+After installation, users can verify that the package works by running:
+
+```bash
+python -m gvd_openseespy.examples.verify_gvdhysteretic
+```
+
+Expected output:
+
+```text
+GVDHysteretic verification completed successfully.
+Node 2 displacement after one step: 0.001
+```
+
+### Citation
+
+If you use this material, please cite:
+
+Gholami, M., Viau, C., and Doudak, G. (2026). Proposed new hysteresis model for dowel-type connections of timber lateral load resisting systems. Engineering Structures. https://doi.org/10.1016/j.engstruct.2026.123034
