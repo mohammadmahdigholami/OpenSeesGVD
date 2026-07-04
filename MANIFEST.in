@@ -1,0 +1,4 @@
+include PYPI_README.md
+include COPYRIGHT
+recursive-include python_package/gvd_openseespy *.py
+recursive-include python_package/gvd_openseespy *.pyd

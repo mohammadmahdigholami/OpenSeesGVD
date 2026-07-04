@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gvd-openseespy"
+version = "0.1.0"
+description = "Modified OpenSeesPy distribution including the GVDHysteretic uniaxial material"
+readme = "PYPI_README.md"
+requires-python = ">=3.13,<3.14"
+license = "LicenseRef-OpenSees"
+license-files = ["COPYRIGHT"]
+
+authors = [
+  { name = "Mohammadmahdi Gholami" }
+]
+
+keywords = [
+  "OpenSees",
+  "OpenSeesPy",
+  "GVDHysteretic",
+  "timber connections",
+  "hysteretic material",
+  "seismic analysis"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: Microsoft :: Windows :: Windows 10",
+  "Operating System :: Microsoft :: Windows :: Windows 11"
+]
+
+[project.urls]
+Homepage = "https://github.com/mohammadmahdigholami/OpenSeesGVD"
+Repository = "https://github.com/mohammadmahdigholami/OpenSeesGVD"
+Paper = "https://doi.org/10.1016/j.engstruct.2026.123034"
+Issues = "https://github.com/mohammadmahdigholami/OpenSeesGVD/issues"
