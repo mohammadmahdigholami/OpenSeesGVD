@@ -38,3 +38,13 @@ Gholami, M., Viau, C., and Doudak, G. (2026). Proposed new hysteresis model for 
 ## License and attribution
 
 This package is a modified OpenSees/OpenSeesPy distribution. Users should follow the original OpenSees/OpenSeesPy license terms in addition to citing the associated research paper.
+
+## Disclaimer and license notice
+
+This package provides an unofficial modified OpenSeesPy build containing the `GVDHysteretic` uniaxial material model developed for research purposes.
+
+This package is not an official OpenSees/OpenSeesPy release and is not endorsed by UC Berkeley, PEER, or the OpenSees developers.
+
+This package is intended primarily for research and educational use. Commercial redistribution or incorporation into commercial products may require permission from the appropriate copyright holder(s).
+
+OpenSees/OpenSeesPy copyright and license notices are retained in accordance with the original license.

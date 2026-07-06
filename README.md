@@ -146,6 +146,6 @@ This package provides an unofficial modified OpenSeesPy build containing the `GV
 
 This package is not an official OpenSees/OpenSeesPy release and is not endorsed by UC Berkeley, PEER, or the OpenSees developers.
 
-This package is intended for research and educational use. Commercial redistribution or incorporation into commercial products may require permission from the appropriate copyright holder(s).
+This package is intended primarily for research and educational use. Commercial redistribution or incorporation into commercial products may require permission from the appropriate copyright holder(s).
 
 OpenSees/OpenSeesPy copyright and license notices are retained in accordance with the original license.
