@@ -139,3 +139,13 @@ Node 2 displacement after one step: 0.001
 If you use this material, please cite:
 
 Gholami, M., Viau, C., and Doudak, G. (2026). Proposed new hysteresis model for dowel-type connections of timber lateral load resisting systems. Engineering Structures. https://doi.org/10.1016/j.engstruct.2026.123034
+
+## Disclaimer and license notice
+
+This package provides an unofficial modified OpenSeesPy build containing the `GVDHysteretic` uniaxial material model developed for research purposes.
+
+This package is not an official OpenSees/OpenSeesPy release and is not endorsed by UC Berkeley, PEER, or the OpenSees developers.
+
+This package is intended for research and educational use. Commercial redistribution or incorporation into commercial products may require permission from the appropriate copyright holder(s).
+
+OpenSees/OpenSeesPy copyright and license notices are retained in accordance with the original license.
